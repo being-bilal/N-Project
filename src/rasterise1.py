@@ -1,3 +1,8 @@
+"""
+This script rasterizes the volcano locations and computes the distance to the nearest volcano for each pixel.
+The resulting raster is saved as "distance_to_volcano.tif" with ocean pixels masked out
+"""
+
 import rasterio 
 import numpy as np
 import geopandas as gpd
@@ -5,17 +10,15 @@ from rasterio.features import rasterize
 from scipy.ndimage import distance_transform_edt
 import os
 
-# Template raster
 with rasterio.open("/Users/mohammadbilal/Documents/Projects/N-Project/data/raw/Seismic_data.tif") as src:
     sample_crs = src.crs
     sample_shape = (src.height, src.width)
     sample_transform = src.transform
-    pixel_size_deg = src.res[0]
+    pixel_size_deg = src.res[0] #pixel width in degrees 
     sample_meta = src.meta.copy()
 
 pixel_size_km = pixel_size_deg * 111
 
-# --- Build land mask from Natural Earth country boundaries ---
 world = gpd.read_file("/Users/mohammadbilal/Documents/Projects/N-Project/data/raw/borders_data/ne_10m_admin_0_countries.shp")
 world = world.to_crs(sample_crs)
 
@@ -43,7 +46,6 @@ volcano_grid = rasterize(
 # --- Distance transform ---
 distance = distance_transform_edt(volcano_grid == 0) * pixel_size_km
 
-# --- Apply land mask — set ocean pixels to nodata ---
 distance[land_mask == 0] = -9999
 
 # --- Save ---
