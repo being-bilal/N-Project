@@ -62,8 +62,6 @@ fault_grid = rasterize(
 distance_fault_km = distance_transform_edt(fault_grid == 0) * pixel_size_km
 
 # Apply 10km exclusion threshold
-# 0 = too close to fault (bad)
-# 1 = safe distance from fault (good)
 fault_mask = np.where(distance_fault_km >= 10, 1, 0).astype("uint8")
 
 # Ocean pixels get nodata
