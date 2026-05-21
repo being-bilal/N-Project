@@ -20,7 +20,6 @@ with rasterio.open(f"{BASE}/data/raw/seismic_data.tif") as src:
 
 pixel_size_km = pixel_size_deg * 111
 
-# --- Land mask (to remove ocean pixels) ---
 world = gpd.read_file("/Users/mohammadbilal/Documents/Projects/N-Project/data/raw/borders_data/ne_10m_admin_0_countries.shp")
 world = world.to_crs(sample_crs)
 
