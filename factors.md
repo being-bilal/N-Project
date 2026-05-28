@@ -3,7 +3,6 @@
     - The necessity for a reliable and sufficient supply of cooling water 
     - the presence of an active geological fault within the immediate vicinity of a site
     - proximity of the site to population centers
-    - sites should be located near high-voltage substations or transmission corridors
     - Siting must avoid areas dedicated to specific uses, such as national parks( "World Database on Protected Areas")
     - Frequency and distribution of volcanic eruptions
     - Proximity to International Borders

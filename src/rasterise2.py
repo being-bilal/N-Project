@@ -8,6 +8,7 @@ import geopandas as gpd
 from rasterio.features import rasterize
 from scipy.ndimage import distance_transform_edt
 import os
+from shapely.ops import unary_union
 
 BASE = "/Users/mohammadbilal/Documents/Projects/N-Project"
 
@@ -36,7 +37,6 @@ countries = gpd.read_file(f"{BASE}/data/raw/borders_data/ne_10m_admin_0_countrie
 countries = countries.to_crs(sample_crs)
 
 # Extract boundary lines from country polygons
-from shapely.ops import unary_union
 border_lines = unary_union(countries.geometry.boundary)
 borders_gdf  = gpd.GeoDataFrame(geometry=[border_lines], crs=sample_crs)
 
