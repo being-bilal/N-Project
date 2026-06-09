@@ -21,3 +21,8 @@ It is an implementation of the gradient boosting model just like XGBoost that is
 
 --- 
 ### Weighted Linear Combination 
+Weighted linear combination is a traditional method in GIS suitability framework where a final suitability score is calculated by multiplying standardized values of the factors such as population, distance to water and pga in this case by their weights and summing the results. (Y = Wx). For this weights are to be assigned to each factor. this can be done arbitarily using the importance of each fator as a criteria but to eliminate purely arbitrary weight assignment within WLC, the Analytic Hierarchy Process (AHP) is used. AHP is a mathematically rigorous decision-making framework that derives objective weights through a series of structured, matrix-based pairwise comparisons.
+It is executed in four distinct steps as follows: 
+* Matrix Evaluation (AHP): A 7×7 (number of factors = 7) pairwise matrix was constructed to rank your specific columns, using this matrix the weights of the factors were determined.
+* Scaling: Because raw units (distances and pga values) cannot be added together directly, normalized values between 0.0 (highly dangerous/unsuitable) and 1.0 (perfectly safe/ideal) are used.
+* Then For every single coordinate, we multiply those normalized values by their exact AHP weights and added them up to output a final traditional suitability prediction.
