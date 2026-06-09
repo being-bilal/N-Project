@@ -56,7 +56,3 @@ dist_to_fault: 0.06
 dist_to_volcano: 0.06
 border_distance: 0.03
 """
-
-### WLC Calculation
-
-
