@@ -16,4 +16,7 @@ Like standard Gradient Boosting, XGBoost builds decision trees sequentially:
 
 ---
 
-### CatBoost
+### LightGBM 
+It is an implementation of the gradient boosting model just like XGBoost that is designed to provide high accuracy on large dataset while comsuning less memory and time, Its main innovations are histogram-based splitting, which reduces the number of split candidates by grouping continuous feature values into bins, and leaf-wise tree growth, which expands the leaf that provides the greatest reduction in loss rather than growing all nodes at the same depth. This allows it to save memory and perform much better on large datasets compared to traditional Gradient Boosting model.
+
+---
