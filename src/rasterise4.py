@@ -12,7 +12,7 @@ import os
 
 BASE = "/Users/mohammadbilal/Documents/Projects/N-Project"
 
-# --- Template ---
+# Template 
 with rasterio.open(f"{BASE}/data/raw/seismic_data.tif") as src:
     sample_crs       = src.crs
     sample_shape     = (src.height, src.width)
@@ -22,7 +22,7 @@ with rasterio.open(f"{BASE}/data/raw/seismic_data.tif") as src:
 
 pixel_size_km = pixel_size_deg * 111
 
-# --- Land mask ---
+# Land mask
 world = gpd.read_file("/Users/mohammadbilal/Documents/Projects/N-Project/data/raw/borders_data/ne_10m_admin_0_countries.shp")
 world = world.to_crs(sample_crs)
 land_mask = rasterize(
@@ -35,11 +35,9 @@ land_mask = rasterize(
 
 os.makedirs(f"{BASE}/data/processed/rasters", exist_ok=True)
 
-# =====================================================================
 # FAULT LINES — binary exclusion mask
 # 0 = within 100km of fault (excluded)
 # 1 = beyond 100km (acceptable)
-# =====================================================================
 print("Processing fault lines...")
 
 faults = gpd.read_file(
@@ -81,14 +79,3 @@ distance_fault_km[land_mask == 0] = -9999
 
 with rasterio.open(f"{BASE}/data/processed/rasters/distance_to_fault.tif", "w", **meta_float) as dst:
     dst.write(distance_fault_km.astype("float32"), 1)
-
-# --- Verification ---
-print("\n--- Fault Exclusion Mask ---")
-land_pixels = fault_mask[land_mask == 1]
-excluded  = (land_pixels == 0).sum()
-safe      = (land_pixels == 1).sum()
-total     = excluded + safe
-print(f"  Excluded (within 100km of fault): {excluded:>10,} px  ({excluded/total*100:.1f}%)")
-print(f"  Safe     (beyond 100km of fault): {safe:>10,} px  ({safe/total*100:.1f}%)")
-print(f"\nSaved: fault_exclusion_mask.tif  (binary 0/1)")
-print(f"Saved: distance_to_fault.tif     (continuous km, for reference)")

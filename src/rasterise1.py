@@ -43,17 +43,13 @@ volcano_grid = rasterize(
     dtype="uint8"
 )
 
-# --- Distance transform ---
 distance = distance_transform_edt(volcano_grid == 0) * pixel_size_km
 
 distance[land_mask == 0] = -9999
 
-# --- Save ---
 os.makedirs("data/processed/rasters", exist_ok=True)
 meta = sample_meta.copy()
 meta.update(dtype="float32", count=1, nodata=-9999)
 
 with rasterio.open("/Users/mohammadbilal/Documents/Projects/N-Project/data/processed/distance_to_volcano.tif", "w", **meta) as dst:
     dst.write(distance.astype("float32"), 1)
-
-print("Done — distance to volcano saved (ocean masked)")
