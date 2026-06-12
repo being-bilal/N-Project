@@ -35,7 +35,8 @@ A[5, 6] = 3.0
 for i in range(n):
     for j in range(i+1, n):
         A[j, i] = 1.0 / A[i, j]
-
+print("Pairwise Comparison Matrix (A):")
+print(pd.DataFrame(A, index=criteria, columns=criteria))
 # Computing weights using the AHP method
 column_sums = A.sum(axis=0) # Sum of the values in each column
 normalized_A = A / column_sums # Normalize each element by the sum of its column
