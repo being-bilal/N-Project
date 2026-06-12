@@ -23,7 +23,6 @@ raster_paths = {
     'border_distance': 'maps/TestMaps/asia_border_distance.tif'
 }
 
-
 # Read the first raster to get the spatial dimensions and metadata template
 with rasterio.open(raster_paths['seismic_pga']) as ref_raster:
     meta = ref_raster.meta.copy() 
@@ -34,7 +33,7 @@ with rasterio.open(raster_paths['seismic_pga']) as ref_raster:
 total_pixels = height * width
 print("Total pixels : ", total_pixels)
 
-# Create an empty 2D array to hold the feature values for all pixels
+# array to hold the feature values for all pixels
 feature_matrix = np.zeros((total_pixels, len(feature_order)), dtype=np.float32)
 for idx, feature_name in enumerate(feature_order):
     with rasterio.open(raster_paths[feature_name]) as src:
@@ -45,17 +44,29 @@ nodata_val = -9999.0
 valid_land_mask = ~np.any(feature_matrix == nodata_val, axis=1) & ~np.any(np.isnan(feature_matrix), axis=1)
 print(f"Total active terrestrial pixels to compute: {np.sum(valid_land_mask):,}")
 
-# Initialize a completely empty master map filled entirely with -9999 background flags
+# Initialize a completely empty master map filled entirely with -9999 background 
 suitability_array_flat = np.full(total_pixels, nodata_val, dtype=np.float32)
 
 if np.sum(valid_land_mask) > 0:
     print("\nBroadcasting machine learning model predictions over land cells...")
     X_inference = feature_matrix[valid_land_mask]
     predictions = trained_model.predict(X_inference)
-    suitability_array_flat[valid_land_mask] = predictions
+    
+    # Normalize predictions to 0.0–1.0 range for better interpretability
+    current_min = predictions.min()
+    current_max = predictions.max()
+    print(f" -> Detected Raw Model Score Range: {current_min:.4f} to {current_max:.4f}")
+    print(" -> Rescaling terrestrial grid values to a standard 0.0 to 1.0 index...")
+    
+    if current_max > current_min:
+        predictions_normalized = (predictions - current_min) / (current_max - current_min)
+    else:
+        predictions_normalized = predictions  
+        
+    suitability_array_flat[valid_land_mask] = predictions_normalized
 
 suitability_map_2d = suitability_array_flat.reshape(shape)
-output_filename = "Final_Map.tif"
+output_filename = "Predicted_raster.tif"
 print(f"\nWriting spatial matrix back to georeferenced GeoTIFF format...")
 
 meta.update(
@@ -66,3 +77,4 @@ meta.update(
 
 with rasterio.open(output_filename, "w", **meta) as dst:
     dst.write(suitability_map_2d, 1)
+
