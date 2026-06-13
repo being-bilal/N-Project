@@ -56,7 +56,8 @@ Like standard Gradient Boosting, XGBoost builds decision trees sequentially:
 * Add the new tree to the model.
 * Repeat until the loss is minimized.
 * But unlike the traditional gradient boost model it uses L2 regularisation and tree proning using a gain funtion that is calculated using the gradient and hessian of the instances of the dataset.
-
+* Unlike traditional methods that rely on human assumptions, XGBoost automatically calculates the importance of each spatial feature based on how much it improves the model's prediction accuracy during training.
+![Alt Text](https://github.com/being-bilal/N-Project/blob/a9f44b28167af2bff22313a409dacbb4647d6d8d/Graphs/XGboost_Feature_Importance.png)
 ---
 
 ### LightGBM
@@ -70,12 +71,11 @@ It is an implementation of the gradient boosting model just like XGBoost that is
 Weighted linear combination is a traditional method in GIS suitability framework where a final suitability score is calculated by multiplying standardized values of the factors such as population, distance to water and pga in this case by their weights and summing the results. (Y = Wx). For this weights are to be assigned to each factor. this can be done arbitarily using the importance of each fator as a criteria but to eliminate purely arbitrary weight assignment within WLC, the Analytic Hierarchy Process (AHP) is used. AHP is a mathematically rigorous decision-making framework that derives objective weights through a series of structured, matrix-based pairwise comparisons.
 It is executed in four distinct steps as follows: 
 
-* Matrix Evaluation (AHP): A 7×7 (number of factors = 7) pairwise matrix was constructed to rank your specific columns, using this matrix the weights of the factors were determined.
-
+* Matrix Evaluation (AHP): A 7×7 (number of factors = 7) pairwise matrix was constructed to rank your specific columns, using this matrix the weights of the factors were determined. 
+![Alt Text](https://github.com/being-bilal/N-Project/blob/a9f44b28167af2bff22313a409dacbb4647d6d8d/Graphs/AHP_Matrix_Heatmap.png)
 * Scaling: Because raw units (distances and pga values) cannot be added together directly, normalized values between 0.0 (highly dangerous/unsuitable) and 1.0 (perfectly safe/ideal) are used.
-
 * Then For every single coordinate, we multiply those normalized values by their exact AHP weights and added them up to output a final traditional suitability prediction.
-
+![Alt Text](https://github.com/being-bilal/N-Project/blob/a9f44b28167af2bff22313a409dacbb4647d6d8d/Graphs/AHP_Weights_Bar.png)
 ---
 
 ## Feature Extraction
@@ -163,27 +163,8 @@ To evaluate the robustness of our framework, we tested the models on a completel
 
 The traditional WLC method yielded a negative $R^2$ score. This massive performance gap exists because WLC fails to capture strict non-linear safety thresholds. In WLC, a site with a massive population but excellent water access and zero seismic risk might still average out to a "moderate" suitability score. However, tree-based models like LightGBM and XGBoost successfully learned strict engineering vetoes: *if population density exceeds a certain safety threshold, the suitability must drop to absolute zero, regardless of how good the other factors are.* The ML models proved highly capable of learning these complex, real-world IAEA safety constraints natively from the data without requiring hard-coded rules.
 
-### 2. Geographic Distribution of the Suitability Index
-
-When projecting the model's predictions across the continuous geography of the test continent, the resulting **Suitability Index** distribution paints a stark reality of energy infrastructure planning.
-
-The distribution is heavily right-skewed. The vast majority of the continent's landmass falls into the **0.0 to 0.2** (Highly Unsuitable) range. This is an expected and accurate geographic reality: massive portions of land are eliminated due to compounding factors such as high population density, mountainous terrain (high PGA and active faults), protected ecological reserves, or extreme distance from reliable cooling water.
+### Geographic Distribution of the Suitability Index
+![Alt Text](https://github.com/being-bilal/N-Project/blob/main/Graphs/Distribution.png)
+When projecting the model's predictions across the continuous geography of the test continent. The vast majority of the continent's landmass falls into the **0.0 to 0.2** (Highly Unsuitable) range. This is an expected and accurate geographic reality: massive portions of land are eliminated due to compounding factors such as high population density, mountainous terrain, protected ecological reserves, or extreme distance from reliable cooling water.
 
 Only a microscopic fraction of the total land area achieves a score of **0.8 to 1.0** (Highly Suitable). This validates the model's accuracy, demonstrating that finding an optimal nuclear site that perfectly balances geohazard safety, ecological preservation, and hydrological access is an exceptionally rare geographic anomaly.
-
-### 3. Practical Applications: How This Framework Can Be Used
-
-This framework transitions nuclear site selection from a purely manual, politically driven process to a data-backed, continent-scale algorithmic search. It can be utilized by:
-
-* **Energy Ministries and Policy Makers:** To perform rapid, low-cost preliminary screenings of an entire country or continent to identify top-tier candidate zones before commissioning multi-million-dollar geotechnical surveys.
-* **Environmental Agencies:** To audit proposed power plant sites and mathematically prove whether a safer, less ecologically disruptive alternative exists nearby.
-* **Private Energy Developers:** To optimize land acquisition strategies by overlaying the high-suitability "heatmaps" generated by this model with local real estate costs and grid proximity.
-
-### 4. Future Extensions and Scalability
-
-While the current model strictly adheres to IAEA topographical and geological guidelines, it is designed to be highly modular. Future iterations of this framework can be extended by integrating:
-
-* **Climate Change & Hydrological Forecasting:** Incorporating predictive models for severe droughts, river flow reduction, and sea-level rise to ensure that a site suitable today will still have adequate cooling water in 2080.
-* **Grid Infrastructure Proximity:** Adding spatial layers for existing high-voltage transmission lines to calculate the economic feasibility of connecting a new plant to the national grid.
-* **Socio-Economic & Political Sentiment:** Integrating regional data on public acceptance of nuclear energy or localized construction costs to refine the model from a purely physical suitability index to a socio-economic feasibility index.
-* **Advanced Deep Learning:** Exploring Convolutional Neural Networks (CNNs) using satellite imagery to capture micro-topological features that traditional raster datasets might miss.
