@@ -1,7 +1,8 @@
 # Nuclear Power Plant Site Suitability Analysis
 
 A geospatial machine learning project for predicting suitable sites for nuclear power plants using tree-based ensemble models and traditional GIS-based weighted linear combination.
-
+![Alt Text](https://github.com/being-bilal/N-Project/blob/a9f44b28167af2bff22313a409dacbb4647d6d8d/Images/popullation.png)
+---
 ---
 
 ## Reference Standard
