@@ -1,8 +1,9 @@
 # Nuclear Power Plant Site Suitability Analysis
 
 A geospatial machine learning project for predicting suitable sites for nuclear power plants using tree-based ensemble models and traditional GIS-based weighted linear combination.
-![Alt Text](https://github.com/being-bilal/N-Project/blob/a9f44b28167af2bff22313a409dacbb4647d6d8d/Images/popullation.png)
----
+
+--- 
+![Alt Text](https://github.com/being-bilal/N-Project/blob/main/Images/FinalMap.png)
 ---
 
 ## Reference Standard
@@ -23,6 +24,9 @@ Derived from IAEA SSR-1 requirements, the following siting criteria were conside
 - **Volcanic Activity** — Frequency and spatial distribution of volcanic eruptions
 - **International Borders** — Proximity to national borders
 - **Terrain Elevation** — Elevation of the terrain at the proposed power plant site (Terrain elevation was not included in the final site selection due to unavailability of the appropriate publicly available dataset)
+
+
+![Alt Text](https://github.com/being-bilal/N-Project/blob/main/Images/collage.png)
 
 ---
 
@@ -113,6 +117,9 @@ Instead of selecting random global points as "unsuitable" examples, **3,000 targ
 | Tricky Fakes | 1,000 | Sites just outside acceptable thresholds — close to faults, borders, or volcanoes |
 | Decoy Fakes | 1,000 | Sites that appear ideal (flat terrain, near water) but are disqualified by a single critical hazard |
 
+![Alt Text](https://github.com/being-bilal/N-Project/blob/main/Images/datapoints-target.png)
+
+
 ### Handling Country Borders
 
 A `Region` column is added to the dataset. This is necessary because nuclear siting norms differ significantly by geopolitical context:
@@ -133,6 +140,9 @@ Standard random splitting is rejected in favor of a **Region-Based Split**:
 
 Nearby geographic coordinates share nearly identical features due to spatial autocorrelation. A random split would allow the model to memorize regional landscapes rather than learning transferable, universal engineering principles.
 
+![Alt Text](https://github.com/being-bilal/N-Project/blob/main/Images/datapoint-regions.png)
+
+
 ---
 
 ### ML vs. Traditional Engineering Comparison
@@ -144,12 +154,7 @@ A separate **Weighted Linear Combination (WLC)** model is built as a transparent
 - Provide interpretable validation that satisfies real-world civil engineering practice, where black-box AI models are rarely trusted without a comparable deterministic benchmark.
 
 ## Results
-Here is a detailed, professionally formatted **Results and Discussion** section that you can add directly to the end of your `README.md` or technical report. It synthesizes all your findings, compares the architectures, explains the geographic realities, and outlines future use cases.
-
 ---
-
-## Results and Discussion
-
 ### Machine Learning vs. Traditional Methods
 
 To evaluate the robustness of our framework, we tested the models on a completely unseen holdout region (Asia) to simulate real-world generalization. The performance of the machine learning models (LightGBM and XGBoost) was compared against the traditional Weighted Linear Combination (WLC) baseline.
